@@ -89,3 +89,32 @@ func (v Vector) Dot(w Vector) (d float64) {
 	}
 	return blasgo.DDOT(v.n, v.data, v.inc, w.data, w.inc)
 }
+
+//Scale scales the vector with scalar.
+func (v Vector) Scale(s float64) {
+	blasgo.DSCAL(v.n, s, v.data, v.inc)
+}
+
+//Copy creates a new copy of vector
+func (v Vector) Copy() (w Vector) {
+	w.data = make([]float64, v.n)
+	w.n = v.n
+	w.inc = 1
+	blasgo.DCOPY(v.n, v.data, v.inc, w.data, w.inc)
+	return w
+}
+
+//Sum calculates the sum of elements.
+func (v Vector) Sum() float64 {
+	return blasgo.DASUM(v.n, v.data, v.inc)
+}
+
+//Max returns the max index of elements.
+func (v Vector) Max() int {
+	return blasgo.IDAMAX(v.n, v.data, v.inc)
+}
+
+//Norm calculates the norm of the vector.
+func (v Vector) Norm() float64 {
+	return blasgo.DNRM2(v.n, v.data, v.inc)
+}
