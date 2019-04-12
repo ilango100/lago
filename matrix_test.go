@@ -19,15 +19,15 @@ func TestMatrixRowCol(t *testing.T) {
 		4, 5, 6,
 		7, 8, 9,
 	}, 3, 3)
-	v := mat.Row(1)
+	v := mat.Row(1).Result()
 	row := []float64{4, 5, 6}
-	if notEqual64(row, v.data) {
+	if notEqual64(row, v) {
 		t.Errorf("Row(1): Expected %v, got %v", row, v)
 	}
 	t.Logf("Row(1): %v", v)
-	v = mat.Col(1)
+	v = mat.Col(1).Result()
 	col := []float64{2, 5, 8}
-	if notEqual64(col, v.data) {
+	if notEqual64(col, v) {
 		t.Errorf("Col(1): Expected %v, got %v", row, v)
 	}
 	t.Logf("Col(1): %v", v)

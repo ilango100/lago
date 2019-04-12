@@ -10,6 +10,7 @@ import (
 type Matrix struct {
 	data     []float64
 	m, n, ld int
+	trans    blasgo.Transpose
 }
 
 //NewMatrix creates a new matrix.
@@ -54,18 +55,44 @@ func (mat Matrix) String() string {
 
 //Row returns i-th row.
 func (mat Matrix) Row(i int) (v Vector) {
-	v.data = make([]float64, mat.n)
-	blasgo.DCOPY(mat.n, mat.data[i*mat.ld:], 1, v.data, 1)
+	// v.data = make([]float64, mat.n)
+	// blasgo.DCOPY(mat.n, mat.data[i*mat.ld:], 1, v.data, 1)
+	// v.inc = 1
+
+	if mat.trans == blasgo.Trans {
+		return mat.Col(i)
+	}
+
+	v.data = mat.data[i*mat.ld:]
 	v.inc = 1
 	v.n = mat.n
+
 	return v
 }
 
 //Col returns i-th column.
 func (mat Matrix) Col(i int) (v Vector) {
-	v.data = make([]float64, mat.m)
-	blasgo.DCOPY(mat.m, mat.data[i:], mat.ld, v.data, 1)
-	v.inc = 1
+	// v.data = make([]float64, mat.m)
+	// blasgo.DCOPY(mat.m, mat.data[i:], mat.ld, v.data, 1)
+	// v.inc = 1
+
+	if mat.trans == blasgo.Trans {
+		return mat.Row(i)
+	}
+
+	v.data = mat.data[i:]
+	v.inc = mat.ld
 	v.n = mat.m
+
 	return v
+}
+
+//T transposes the matrix
+func (mat Matrix) T() Matrix {
+	if mat.trans == blasgo.Trans {
+		mat.trans = blasgo.NoTrans
+		return mat
+	}
+	mat.trans = blasgo.Trans
+	return mat
 }
