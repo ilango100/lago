@@ -57,6 +57,20 @@ func (v Vector) Slice(arr ...int) (Vector, error) {
 	return v, nil
 }
 
+// Assign assigns the value to the vector if dimensions match.
+// Note that the Vectors extracted from Matrix also change the value of the Matrix.
+func (v Vector) Assign(value []float64) error {
+	if len(value) != v.n {
+		return fmt.Errorf("Dimensions do not match")
+	}
+
+	for i := 0; i < v.n; i++ {
+		v.data[i*v.inc] = value[i]
+	}
+
+	return nil
+}
+
 //Result returns the final result
 func (v Vector) Result() (res []float64) {
 	res = make([]float64, v.n)
