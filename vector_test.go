@@ -22,5 +22,5 @@ func TestVectorSlice(t *testing.T) {
 	if str := slc.String(); str != res {
 		t.Errorf("Sliced string: %s != %s ", str, res)
 	}
-	t.Logf("Sliced vector: %s", slc.String())
+	t.Logf("Sliced vector: %s", slc)
 }
