@@ -92,3 +92,16 @@ func TestVectorMax(t *testing.T) {
 	t.Logf("Max Result: %d", resl)
 
 }
+
+func TestVectorPlusAX(t *testing.T) {
+	v := NewVector([]float64{1, 2, 3})
+	x := NewVector([]float64{2, 3, 4})
+	a := 2.4
+
+	res := NewVector([]float64{5.8, 9.2, 12.6})
+	v.PlusAX(a, x)
+	if notEqual64(res.data, v.data) {
+		t.Errorf("PlusAX: Expected %v, got %v", res, v)
+	}
+	t.Logf("PlusAX Result: %v", v)
+}

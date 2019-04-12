@@ -95,6 +95,14 @@ func (v Vector) Scale(s float64) {
 	blasgo.DSCAL(v.n, s, v.data, v.inc)
 }
 
+//PlusAX => v = v + a*x
+func (v Vector) PlusAX(a float64, x Vector) {
+	if v.n != x.n {
+		return
+	}
+	blasgo.DAXPY(v.n, a, x.data, x.inc, v.data, v.inc)
+}
+
 //Copy creates a new copy of vector
 func (v Vector) Copy() (w Vector) {
 	w.data = make([]float64, v.n)
