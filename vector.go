@@ -2,6 +2,8 @@ package lago
 
 import (
 	"fmt"
+
+	"github.com/ilango100/blasgo"
 )
 
 //Vector defines column vector
@@ -71,11 +73,19 @@ func (v Vector) Assign(value []float64) error {
 	return nil
 }
 
-//Result returns the final result
+//Result returns the final result.
 func (v Vector) Result() (res []float64) {
 	res = make([]float64, v.n)
 	for i := range res {
 		res[i] = v.data[i*v.inc]
 	}
 	return res
+}
+
+//Dot calculates the dot product. Returns 0 when dimensions don't match.
+func (v Vector) Dot(w Vector) (d float64) {
+	if v.n != w.n {
+		return d
+	}
+	return blasgo.DDOT(v.n, v.data, v.inc, w.data, w.inc)
 }

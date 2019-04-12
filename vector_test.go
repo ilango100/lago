@@ -1,10 +1,13 @@
 package lago
 
-import "testing"
+import (
+	"math"
+	"testing"
+)
 
 func TestVectorString(t *testing.T) {
 	v := NewVector([]float64{1, 2, 3, 4, 5})
-	res := "[ 1, 2, 3, 4, 5, \b\b ]"
+	res := "[ 1 2 3 4 5 ]"
 	str := v.String()
 	if str != res {
 		t.Errorf("Error converting to string: '%s' != '%s'", str, res)
@@ -24,4 +27,15 @@ func TestVectorSlice(t *testing.T) {
 		t.Errorf("Sliced string: %v != %v", str, res)
 	}
 	t.Logf("Sliced vector: %s", slc)
+}
+
+func TestVectorDot(t *testing.T) {
+	v := NewVector([]float64{1, 2, 3})
+	w := NewVector([]float64{4, 5, 6})
+	res := 32.0
+	resl := v.Dot(w)
+	if math.Abs(resl-res) > errprecision {
+		t.Errorf("Dot: Expected %f, got %f", res, resl)
+	}
+	t.Logf("Dot Result: %f", resl)
 }
