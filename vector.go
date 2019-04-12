@@ -22,9 +22,9 @@ func NewVector(f []float64) (v Vector) {
 func (v Vector) String() (s string) {
 	s = "[ "
 	for i := 0; i < v.n; i++ {
-		s += fmt.Sprint(v.data[i*v.inc], ", ")
+		s += fmt.Sprint(v.data[i*v.inc], " ")
 	}
-	s += "\b\b ]"
+	s += "]"
 	return s
 }
 

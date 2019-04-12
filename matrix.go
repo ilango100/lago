@@ -39,16 +39,8 @@ func I(m int) Matrix {
 
 func (mat Matrix) String() string {
 	s := ""
-	ind := 0
 	for i := 0; i < mat.m; i++ {
-		s += "| "
-		for j := 0; j < mat.n; j++ {
-			s += fmt.Sprint(mat.data[ind], " ")
-			ind++
-		}
-		ind += mat.ld - mat.n
-		s += "|\n"
-
+		s += fmt.Sprintln(mat.Row(i))
 	}
 	return s
 }
@@ -60,7 +52,14 @@ func (mat Matrix) Row(i int) (v Vector) {
 	// v.inc = 1
 
 	if mat.trans == blasgo.Trans {
+		mat.trans = blasgo.NoTrans
 		return mat.Col(i)
+	}
+
+	if i < 0 {
+		i = 0
+	} else if i >= mat.m {
+		i = mat.m - 1
 	}
 
 	v.data = mat.data[i*mat.ld:]
@@ -77,7 +76,14 @@ func (mat Matrix) Col(i int) (v Vector) {
 	// v.inc = 1
 
 	if mat.trans == blasgo.Trans {
+		mat.trans = blasgo.NoTrans
 		return mat.Row(i)
+	}
+
+	if i < 0 {
+		i = 0
+	} else if i >= mat.n {
+		i = mat.n - 1
 	}
 
 	v.data = mat.data[i:]
