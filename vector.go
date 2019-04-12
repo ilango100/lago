@@ -56,3 +56,12 @@ func (v Vector) Slice(arr ...int) (Vector, error) {
 	}
 	return v, nil
 }
+
+//Result returns the final result
+func (v Vector) Result() (res []float64) {
+	res = make([]float64, v.n)
+	for i := range res {
+		res[i] = v.data[i*v.inc]
+	}
+	return res
+}
