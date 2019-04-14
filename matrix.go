@@ -97,6 +97,37 @@ func (mat Matrix) Col(i int) (v Vector) {
 	return v
 }
 
+//SubMatrix extracts the SubMatrix of the matrix
+func (mat Matrix) SubMatrix(i, m, j, n int) Matrix {
+	if i > mat.m || i < 0 {
+		i = 0
+	}
+	if j > mat.n || j < 0 {
+		j = 0
+	}
+	if m > mat.m-i || m <= 0 {
+		m = mat.m - i
+	}
+	if n > mat.n-j || n <= 0 {
+		n = mat.n - j
+	}
+	mat.data = mat.data[i*mat.ld+j:]
+	mat.m = m
+	mat.n = n
+	return mat
+}
+
+//Copy creates a copy of matrix
+func (mat Matrix) Copy() (m Matrix) {
+	m.data = make([]float64, mat.m*mat.n)
+	m.m, m.n, m.trans = mat.m, mat.n, mat.trans
+	m.ld = m.n
+	for i := 0; i < m.m; i++ {
+		m.Row(i).Assign(mat.Row(i).Result())
+	}
+	return m
+}
+
 //T transposes the matrix
 func (mat Matrix) T() Matrix {
 	if mat.trans == blasgo.Trans {

@@ -85,3 +85,17 @@ func TestMatrixPlusAVV(t *testing.T) {
 	}
 	t.Logf("PlusAVV Result:\n%v", a)
 }
+
+func TestMatrixSubMatrix(t *testing.T) {
+	res := []float64{5, 6, 8, 9}
+	a, _ := NewMatrix([]float64{
+		1, 2, 3,
+		4, 5, 6,
+		7, 8, 9,
+	}, 3, 3)
+	b := a.SubMatrix(1, 2, 1, 2).Copy()
+	if notEqual64(res, b.data) {
+		t.Errorf("SubMatrix %v != %v", b, res)
+	}
+	t.Logf("SubMatrix Result:\n%v", b)
+}
