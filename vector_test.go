@@ -105,3 +105,22 @@ func TestVectorPlusAX(t *testing.T) {
 	}
 	t.Logf("PlusAX Result: %v", v)
 }
+
+func TestVectorPlusAMV(t *testing.T) {
+	v := NewVector([]float64{1, 2, 3})
+	y := NewVector([]float64{3, 2, 1})
+	m, _ := NewMatrix([]float64{
+		1, 2, 3,
+		4, 5, 6,
+		7, 8, 9,
+	}, 3, 3)
+
+	// res = 1.2 * y  + 2.3 * m * v
+	res := y.PlusAMV(1.2, 2.3, m, v)
+	resl := []float64{35.8, 76., 116.2}
+	if notEqual64(res.data, resl) {
+		t.Errorf("PlusAMV: %v != %v", res, resl)
+	}
+	t.Logf("PlusAMV Result: %v", res)
+
+}

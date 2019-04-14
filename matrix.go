@@ -15,16 +15,20 @@ type Matrix struct {
 
 //NewMatrix creates a new matrix.
 func NewMatrix(f []float64, m, n int) (mat Matrix, err error) {
+	if m*n <= 0 {
+		return mat, fmt.Errorf("m*n <= 0")
+	}
+	if f == nil {
+		f = make([]float64, m*n)
+	}
 	if m*n != len(f) {
 		return mat, fmt.Errorf("m*n != len(f)")
-	}
-	if len(f) <= 0 {
-		return mat, fmt.Errorf("len(f) <= 0")
 	}
 	mat.data = f
 	mat.m = m
 	mat.n = n
 	mat.ld = n
+	mat.trans = blasgo.NoTrans
 	return mat, nil
 }
 
@@ -100,5 +104,29 @@ func (mat Matrix) T() Matrix {
 		return mat
 	}
 	mat.trans = blasgo.Trans
+	return mat
+}
+
+//PlusAMM => mat = b*mat + a*M1*M2
+func (mat Matrix) PlusAMM(b float64, m1 Matrix, m2 Matrix, a float64) Matrix {
+	if mat.data == nil {
+		mat, _ = NewMatrix(nil, m1.m, m2.n)
+	}
+	if m1.n != m2.m {
+		return mat
+	}
+	blasgo.DGEMM(blasgo.RowMajor, m1.trans, m2.trans, m1.m, m2.n, m1.n, a, mat.data, mat.ld, mat.data, mat.ld, b, mat.data, mat.ld)
+	return mat
+}
+
+//PlusAVV => mat = mat + a*v*vT
+func (mat Matrix) PlusAVV(a float64, v1 Vector, v2 Vector) Matrix {
+	if mat.data == nil {
+		mat, _ = NewMatrix(nil, v1.n, v2.n)
+	}
+	if mat.m != v1.n || mat.n != v2.n {
+		return mat
+	}
+	blasgo.DGER(blasgo.RowMajor, mat.m, mat.n, a, v1.data, v1.inc, v2.data, v2.inc, mat.data, mat.ld)
 	return mat
 }

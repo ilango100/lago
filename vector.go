@@ -20,6 +20,14 @@ func NewVector(f []float64) (v Vector) {
 	return v
 }
 
+//NullVector creates a vector with zeroes initialized
+func NullVector(n int) (v Vector) {
+	v.data = make([]float64, n)
+	v.n = n
+	v.inc = 1
+	return v
+}
+
 //String satisfied Stringer interface
 func (v Vector) String() (s string) {
 	s = "[ "
@@ -95,14 +103,6 @@ func (v Vector) Scale(s float64) {
 	blasgo.DSCAL(v.n, s, v.data, v.inc)
 }
 
-//PlusAX => v = v + a*x
-func (v Vector) PlusAX(a float64, x Vector) {
-	if v.n != x.n {
-		return
-	}
-	blasgo.DAXPY(v.n, a, x.data, x.inc, v.data, v.inc)
-}
-
 //Copy creates a new copy of vector
 func (v Vector) Copy() (w Vector) {
 	w.data = make([]float64, v.n)
@@ -125,4 +125,28 @@ func (v Vector) Max() int {
 //Norm calculates the norm of the vector.
 func (v Vector) Norm() float64 {
 	return blasgo.DNRM2(v.n, v.data, v.inc)
+}
+
+//PlusAX => v = v + a*x
+func (v Vector) PlusAX(a float64, x Vector) Vector {
+	if v.data == nil {
+		v = NullVector(x.n)
+	}
+	if v.n != x.n {
+		return v
+	}
+	blasgo.DAXPY(v.n, a, x.data, x.inc, v.data, v.inc)
+	return v
+}
+
+//PlusAMV => v = b*v + a*M*vcT
+func (v Vector) PlusAMV(b float64, a float64, M Matrix, vc Vector) Vector {
+	if v.data == nil {
+		v = NullVector(M.n)
+	}
+	if M.n != vc.n {
+		return v
+	}
+	blasgo.DGEMV(blasgo.RowMajor, M.trans, M.m, M.n, a, M.data, M.ld, vc.data, vc.inc, b, v.data, v.inc)
+	return v
 }
