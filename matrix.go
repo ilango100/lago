@@ -115,7 +115,7 @@ func (mat Matrix) PlusAMM(b float64, m1 Matrix, m2 Matrix, a float64) Matrix {
 	if m1.n != m2.m {
 		return mat
 	}
-	blasgo.DGEMM(blasgo.RowMajor, m1.trans, m2.trans, m1.m, m2.n, m1.n, a, mat.data, mat.ld, mat.data, mat.ld, b, mat.data, mat.ld)
+	blasgo.DGEMM(blasgo.RowMajor, m1.trans, m2.trans, m1.m, m2.n, m1.n, a, m1.data, m1.ld, m2.data, m2.ld, b, mat.data, mat.ld)
 	return mat
 }
 
