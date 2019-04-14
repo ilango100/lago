@@ -8,9 +8,9 @@ import (
 
 //Matrix denotes 2d matrix.
 type Matrix struct {
-	data     []float64
-	m, n, ld int
-	trans    blasgo.Transpose
+	data           []float64
+	i, j, m, n, ld int
+	trans          blasgo.Transpose
 }
 
 //NewMatrix creates a new matrix.
@@ -66,7 +66,7 @@ func (mat Matrix) Row(i int) (v Vector) {
 		i = mat.m - 1
 	}
 
-	v.data = mat.data[i*mat.ld:]
+	v.data = mat.data[(mat.i+i)*mat.ld+mat.j:]
 	v.inc = 1
 	v.n = mat.n
 
@@ -90,7 +90,7 @@ func (mat Matrix) Col(i int) (v Vector) {
 		i = mat.n - 1
 	}
 
-	v.data = mat.data[i:]
+	v.data = mat.data[mat.i*mat.ld+mat.j+i:]
 	v.inc = mat.ld
 	v.n = mat.m
 
@@ -111,7 +111,8 @@ func (mat Matrix) SubMatrix(i, m, j, n int) Matrix {
 	if n > mat.n-j || n <= 0 {
 		n = mat.n - j
 	}
-	mat.data = mat.data[i*mat.ld+j:]
+	mat.i += i
+	mat.j += j
 	mat.m = m
 	mat.n = n
 	return mat
@@ -146,7 +147,7 @@ func (mat Matrix) PlusAMM(b float64, m1 Matrix, m2 Matrix, a float64) Matrix {
 	if m1.n != m2.m {
 		return mat
 	}
-	blasgo.DGEMM(blasgo.RowMajor, m1.trans, m2.trans, m1.m, m2.n, m1.n, a, m1.data, m1.ld, m2.data, m2.ld, b, mat.data, mat.ld)
+	blasgo.DGEMM(blasgo.RowMajor, m1.trans, m2.trans, m1.m, m2.n, m1.n, a, m1.data[m1.i*m1.ld+m1.j:], m1.ld, m2.data[m2.i*m2.ld+m2.j:], m2.ld, b, mat.data[mat.i*mat.ld+mat.j:], mat.ld)
 	return mat
 }
 
@@ -158,6 +159,6 @@ func (mat Matrix) PlusAVV(a float64, v1 Vector, v2 Vector) Matrix {
 	if mat.m != v1.n || mat.n != v2.n {
 		return mat
 	}
-	blasgo.DGER(blasgo.RowMajor, mat.m, mat.n, a, v1.data, v1.inc, v2.data, v2.inc, mat.data, mat.ld)
+	blasgo.DGER(blasgo.RowMajor, mat.m, mat.n, a, v1.data, v1.inc, v2.data, v2.inc, mat.data[mat.i*mat.ld+mat.j:], mat.ld)
 	return mat
 }

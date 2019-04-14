@@ -147,6 +147,6 @@ func (v Vector) PlusAMV(b float64, a float64, M Matrix, vc Vector) Vector {
 	if M.n != vc.n {
 		return v
 	}
-	blasgo.DGEMV(blasgo.RowMajor, M.trans, M.m, M.n, a, M.data, M.ld, vc.data, vc.inc, b, v.data, v.inc)
+	blasgo.DGEMV(blasgo.RowMajor, M.trans, M.m, M.n, a, M.data[M.i*M.ld+M.j:], M.ld, vc.data, vc.inc, b, v.data, v.inc)
 	return v
 }
