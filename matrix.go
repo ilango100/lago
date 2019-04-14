@@ -32,6 +32,12 @@ func NewMatrix(f []float64, m, n int) (mat Matrix, err error) {
 	return mat, nil
 }
 
+//Z creates a zeroed matrix of order m x n.
+func Z(m, n int) Matrix {
+	mat, _ := NewMatrix(make([]float64, m*n), m, n)
+	return mat
+}
+
 //I creates identity matrix of order m x m.
 func I(m int) Matrix {
 	mat, _ := NewMatrix(make([]float64, m*m), m, m)
@@ -46,6 +52,7 @@ func (mat Matrix) String() string {
 	for i := 0; i < mat.m; i++ {
 		s += fmt.Sprintln(mat.Row(i))
 	}
+	s += fmt.Sprintf("%d x %d\n", mat.m, mat.n)
 	return s
 }
 
