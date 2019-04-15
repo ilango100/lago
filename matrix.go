@@ -47,6 +47,17 @@ func I(m int) Matrix {
 	return mat
 }
 
+//Assign assigns the value from another matrix
+func (mat Matrix) Assign(m Matrix) error {
+	if mat.m != m.m || mat.n != m.n {
+		return fmt.Errorf("Dimensions do not match")
+	}
+	for i := 0; i < mat.m; i++ {
+		mat.Row(i).Assign(m.Row(i).Result())
+	}
+	return nil
+}
+
 func (mat Matrix) String() string {
 	s := ""
 	for i := 0; i < mat.m; i++ {

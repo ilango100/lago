@@ -20,8 +20,8 @@ func NewVector(f []float64) (v Vector) {
 	return v
 }
 
-//NullVector creates a vector with zeroes initialized
-func NullVector(n int) (v Vector) {
+//Zv creates a vector with zeroes initialized
+func Zv(n int) (v Vector) {
 	v.data = make([]float64, n)
 	v.n = n
 	v.inc = 1
@@ -130,7 +130,7 @@ func (v Vector) Norm() float64 {
 //PlusAX => v = v + a*x
 func (v Vector) PlusAX(a float64, x Vector) Vector {
 	if v.data == nil {
-		v = NullVector(x.n)
+		v = Zv(x.n)
 	}
 	if v.n != x.n {
 		return v
@@ -142,7 +142,7 @@ func (v Vector) PlusAX(a float64, x Vector) Vector {
 //PlusAMV => v = b*v + a*M*vcT
 func (v Vector) PlusAMV(b float64, a float64, M Matrix, vc Vector) Vector {
 	if v.data == nil {
-		v = NullVector(M.n)
+		v = Zv(M.n)
 	}
 	if M.n != vc.n {
 		return v
